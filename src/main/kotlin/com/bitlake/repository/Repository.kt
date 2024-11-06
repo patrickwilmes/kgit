@@ -15,22 +15,25 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
 class Repository private constructor(
-    private val path: Path,
+    private var path: Path,
 ) {
-    private val kgitDir = path.resolve(KGIT_DIR_NAME)
-
-    fun initialize(): Either<Failure, Unit> {
+    fun initialize(pathOverride: Path? = null): Either<Failure, Unit> {
+        if (pathOverride != null) {
+            path = pathOverride
+        }
         if (isInitialized()) {
             return Failure("${path.toAbsolutePath()} is already a kgit repository!").left()
         }
         return Either.catch {
-            kgitDir.createDirectory()
+            kgitDir().createDirectory()
             Unit
         }.mapLeft { Failure(it.message ?: it.localizedMessage) }
     }
 
+    private fun kgitDir() = path.resolve(KGIT_DIR_NAME)
+
     private fun isInitialized(): Boolean {
-        return kgitDir.exists() && kgitDir.isDirectory()
+        return kgitDir().exists() && kgitDir().isDirectory()
     }
 
     companion object {

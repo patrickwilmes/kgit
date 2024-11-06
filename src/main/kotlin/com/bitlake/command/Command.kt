@@ -6,12 +6,17 @@ import com.bitlake.repository.Repository
 import java.nio.file.Path
 import java.nio.file.Paths
 
-sealed interface Command {
-    fun execute(): Either<Failure, Response>
+sealed class Command(
+    protected val repository: Repository,
+) {
+    abstract fun execute(): Either<Failure, Response>
 
-    data class Init(private val path: Path = Paths.get(".").toAbsolutePath()) : Command {
+    class Init(
+        private val path: Path = Paths.get(".").toAbsolutePath(),
+        repository: Repository,
+    ) : Command(repository) {
         override fun execute(): Either<Failure, Response> =
-            Repository.getInstance(path).initialize()
+            repository.initialize(path)
                 .map {
                     InitCommandResponse("Repository successfully initialized")
                 }

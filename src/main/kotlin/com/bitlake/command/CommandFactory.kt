@@ -10,6 +10,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import com.bitlake.Failure
+import com.bitlake.repository.Context
 import java.nio.file.Paths
 
 object CommandFactory {
@@ -17,7 +18,10 @@ object CommandFactory {
         return when (args.first()) {
             "init" -> {
                 val path = args.getOrElse(1) { "." }
-                Command.Init(path = Paths.get(path).toAbsolutePath()).right()
+                Command.Init(
+                    path = Paths.get(path).toAbsolutePath(),
+                    Context.repository,
+                ).right()
             }
             else -> Failure("Unknown command!").left()
         }
