@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation(platform("io.arrow-kt:arrow-stack:1.2.4"))
     implementation("io.arrow-kt:arrow-core")
+    implementation("io.github.java-diff-utils:java-diff-utils:4.12")
     testImplementation(kotlin("test"))
     testImplementation("com.willowtreeapps.assertk:assertk:0.28.1")
 }
