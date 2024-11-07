@@ -9,6 +9,7 @@ package com.bitlake.repository
 import java.nio.file.Paths
 
 object Context {
-    private val wd = System.getProperty("user.dir")
+    val wd = System.getProperty("user.dir")
+    const val KGIT_DIR_NAME = ".kgit"
     val repository = Repository.getInstance(Paths.get(wd).toAbsolutePath())
 }

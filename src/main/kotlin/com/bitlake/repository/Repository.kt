@@ -9,6 +9,7 @@ package com.bitlake.repository
 import arrow.core.Either
 import arrow.core.left
 import com.bitlake.Failure
+import com.bitlake.repository.Context.KGIT_DIR_NAME
 import java.nio.file.Path
 import kotlin.io.path.createDirectory
 import kotlin.io.path.exists
@@ -16,7 +17,7 @@ import kotlin.io.path.isDirectory
 
 class Repository private constructor(
     private var path: Path,
-) {
+) : FileTrackingAware by VersionedFiles(path), Ignorable by KGitIgnore() {
     fun initialize(pathOverride: Path? = null): Either<Failure, Unit> {
         if (pathOverride != null) {
             path = pathOverride
@@ -37,7 +38,6 @@ class Repository private constructor(
     }
 
     companion object {
-        private const val KGIT_DIR_NAME = ".kgit"
 
         @Volatile
         private var instance: Repository? = null

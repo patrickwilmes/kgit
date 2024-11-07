@@ -23,6 +23,9 @@ object CommandFactory {
                     Context.repository,
                 ).right()
             }
+            "status" -> {
+                Command.Status(Context.repository).right()
+            }
             else -> Failure("Unknown command!").left()
         }
     }
