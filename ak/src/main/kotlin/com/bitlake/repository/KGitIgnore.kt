@@ -10,6 +10,7 @@ import arrow.core.Either
 import com.bitlake.Failure
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.exists
 
 interface Ignorable {
     fun ignoredPaths(): Either<Failure, Set<Path>>
@@ -19,10 +20,14 @@ class KGitIgnore : Ignorable {
     override fun ignoredPaths(): Either<Failure, Set<Path>> {
         val ignoreFile = Paths.get(Context.wd).toAbsolutePath().resolve(".kgitignore")
         return Either.catch {
-            ignoreFile.toFile().readText().split("\n")
-                .map {
-                    Paths.get(it).toAbsolutePath()
-                }.toSet()
+            if (ignoreFile.exists()) {
+                ignoreFile.toFile().readText().split("\n")
+                    .map {
+                        Paths.get(it).toAbsolutePath()
+                    }.toSet()
+            } else {
+                emptySet()
+            }
         }.mapLeft { Failure(it.message ?: it.localizedMessage) }
     }
 }
